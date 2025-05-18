@@ -1,0 +1,40 @@
+#ifndef FBM3D_metalh
+#define FBM3D_metalh
+
+#include <metal_stdlib>
+#include "../../SharedTypes/include/NoisePlanetTypes.h" // For BaseNoiseSettings, FBMNoiseSettings
+
+// Forward declarations for base noise functions that FBM will use.
+// These would typically be included from their respective .metalh files
+// by any .metal file that implements or uses FBM.
+// For this header, we only need to declare the FBM functions themselves.
+
+namespace FBM3D {
+
+    // FBM function for Perlin base noise
+    float fbm_perlin_3d(
+        float3 position,
+        constant BaseNoiseSettings &baseSettings, // Base frequency, amplitude for the first octave
+        constant FBMNoiseSettings &fbmSettings,
+        thread const int perm_table[512]        // Initialized permutation table
+    );
+
+    // FBM function for Simplex base noise
+    float fbm_simplex_3d(
+        float3 position,
+        constant BaseNoiseSettings &baseSettings,
+        constant FBMNoiseSettings &fbmSettings,
+        thread const int perm_table[512]
+    );
+
+    // FBM function for Value base noise
+    float fbm_value_3d(
+        float3 position,
+        constant BaseNoiseSettings &baseSettings,
+        constant FBMNoiseSettings &fbmSettings,
+        thread const int perm_table[512]
+    );
+
+} // namespace FBM3D
+
+#endif /* FBM3D_metalh */

@@ -1,0 +1,44 @@
+#ifndef CoordinateUtils_metalh
+#define CoordinateUtils_metalh
+
+#include <metal_stdlib>
+// For M_PI_F, M_TAU_F. Ensure these are available or define them if not.
+// Metal standard library typically provides M_PI_F. M_TAU_F can be derived.
+#ifndef M_PI_F
+#define M_PI_F 3.14159265358979323846f
+#endif
+#ifndef M_TAU_F
+#define M_TAU_F (2.0f * M_PI_F)
+#endif
+
+using namespace metal;
+
+namespace CoordinateUtils {
+
+    // Converts 2D UV coordinates (each in [0,1]) from an equirectangular map
+    // to a 3D point on the surface of a sphere.
+    // UV.x (u) = longitude, UV.y (v) = latitude
+    // Standard mapping:
+    // u=0 -> longitude = 0
+    // u=1 -> longitude = 2*PI
+    // v=0 -> latitude_angle (colatitude) = 0 (North Pole, +Y)
+    // v=1 -> latitude_angle (colatitude) = PI (South Pole, -Y)
+    inline float3 equirectangular_uv_to_cartesian_on_sphere(
+        float2 uv,          // u, v in [0,1]
+        float sphere_radius
+    ) {
+        // phi: Azimuthal angle (longitude), from positive X-axis towards positive Z-axis.
+        // theta: Polar angle (colatitude), from positive Y-axis.
+        float phi = uv.x * M_TAU_F;      // [0, 2*PI]
+        float theta = uv.y * M_PI_F;     // [0, PI]
+
+        float x_val = sphere_radius * sin(theta) * cos(phi);
+        float y_val = sphere_radius * cos(theta); // cos(0)=1 (North Pole), cos(PI)=-1 (South Pole)
+        float z_val = sphere_radius * sin(theta) * sin(phi);
+
+        return float3(x_val, y_val, z_val);
+    }
+
+} // namespace CoordinateUtils
+
+#endif /* CoordinateUtils_metalh */

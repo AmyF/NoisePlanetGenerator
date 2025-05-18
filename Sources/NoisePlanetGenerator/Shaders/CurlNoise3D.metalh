@@ -1,0 +1,23 @@
+#ifndef CurlNoise3D_metalh
+#define CurlNoise3D_metalh
+
+#include <metal_stdlib>
+#include "../../SharedTypes/include/NoisePlanetTypes.h" // For BaseNoiseSettings, CurlNoiseSettings
+
+namespace CurlNoise3D {
+
+    // Curl Noise 3D Declaration
+    // This function computes the curl of a 3D vector potential field,
+    // where the potential field itself is generated using a base noise type
+    // (e.g., Perlin or Simplex) specified in curlSettings.
+    // `perm_table` is the initialized permutation table for the base noise.
+    float3 curl_noise_3d(
+        float3 position,
+        constant BaseNoiseSettings &baseSettings,     // Overall scale/offset for the curl field position
+        constant CurlNoiseSettings &curlSettings,   // Defines base noise for potential field, step size
+        thread const int perm_table[512]            // Initialized permutation table
+    );
+
+} // namespace CurlNoise3D
+
+#endif /* CurlNoise3D_metalh */

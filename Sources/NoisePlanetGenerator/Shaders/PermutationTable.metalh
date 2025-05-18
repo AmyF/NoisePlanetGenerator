@@ -1,0 +1,10 @@
+// In PermutationTable.metalh
+#ifndef PermutationTable_metalh
+#define PermutationTable_metalh
+#include <metal_stdlib>
+// ... any other necessary includes ...
+namespace PermutationTable {
+    extern constant int P_DEFAULT[256]; // If it needs to be accessed externally, though usually not
+    void initialize_perm_table(uint seed, thread int perm_target[512]);
+}
+#endif

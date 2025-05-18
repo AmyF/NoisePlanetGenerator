@@ -1,0 +1,86 @@
+#ifndef MathUtils_metalh
+#define MathUtils_metalh
+
+#include <metal_stdlib>
+
+using namespace metal;
+
+namespace MathUtils {
+
+    // Linear interpolation
+    inline float lerp(float a, float b, float t) {
+        return a + t * (b - a);
+    }
+
+    inline float2 lerp(float2 a, float2 b, float t) {
+        return a + t * (b - a);
+    }
+
+    inline float3 lerp(float3 a, float3 b, float t) {
+        return a + t * (b - a);
+    }
+
+    // Smoothstep (GLSL-style, 3x^2 - 2x^3)
+    inline float smoothstep(float edge0, float edge1, float x) {
+        float t = clamp((x - edge0) / (edge1 - edge0), 0.0f, 1.0f);
+        return t * t * (3.0f - 2.0f * t);
+    }
+
+    inline float2 smoothstep(float2 edge0, float2 edge1, float2 x) {
+        float2 t = clamp((x - edge0) / (edge1 - edge0), 0.0f, 1.0f);
+        return t * t * (3.0f - 2.0f * t);
+    }
+    
+    inline float3 smoothstep(float3 edge0, float3 edge1, float3 x) {
+        float3 t = clamp((x - edge0) / (edge1 - edge0), 0.0f, 1.0f);
+        return t * t * (3.0f - 2.0f * t);
+    }
+    
+    // Quintic interpolation (smoother, 6x^5 - 15x^4 + 10x^3)
+    inline float quintic_interpolate(float t) {
+        return t * t * t * (t * (t * 6.0f - 15.0f) + 10.0f);
+    }
+    
+    // Ken Perlin's fade function
+    inline float fade(float t) {
+        return quintic_interpolate(t);
+    }
+
+    // Modulo for float that handles negative numbers correctly (unlike fmod)
+    // result is always in [0, m)
+    inline float mod_positive(float x, float m) {
+        return fmod(fmod(x, m) + m, m);
+    }
+
+    inline float3 mod_positive(float3 x, float3 m) {
+        return float3(mod_positive(x.x, m.x),
+                      mod_positive(x.y, m.y),
+                      mod_positive(x.z, m.z));
+    }
+
+    // Hash function
+    inline uint hash_uint(uint x) {
+        x = ((x >> 16u) ^ x) * 0x45d9f3bu;
+        x = ((x >> 16u) ^ x) * 0x45d9f3bu;
+        x = (x >> 16u) ^ x;
+        return x;
+    }
+
+    inline uint hash_uint3_to_uint(uint3 v) {
+        return hash_uint(v.x + hash_uint(v.y + hash_uint(v.z)));
+    }
+    
+    // Convert a uint hash to a float in [0,1)
+    inline float hash_to_float01(uint h) {
+        return float(h) * (1.0f / 4294967296.0f); // 2^32
+    }
+    
+    // Remap a value from one range to another
+    inline float remap(float value, float original_min, float original_max, float new_min, float new_max) {
+        if (original_min == original_max) return new_min; // Avoid division by zero
+        return new_min + (value - original_min) * (new_max - new_min) / (original_max - original_min);
+    }
+
+} // namespace MathUtils
+
+#endif /* MathUtils_metalh */

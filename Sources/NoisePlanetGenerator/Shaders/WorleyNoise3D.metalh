@@ -1,0 +1,37 @@
+#ifndef WorleyNoise3D_metalh
+#define WorleyNoise3D_metalh
+
+#include <metal_stdlib>
+#include "../../SharedTypes/include/NoisePlanetTypes.h" // For BaseNoiseSettings, WorleyNoiseSettings
+
+namespace WorleyNoise3D {
+
+    // Struct to hold multiple distance results if needed internally
+    struct WorleyDistances {
+        float F1; // Distance to nearest point
+        float F2; // Distance to second nearest point
+        // Potentially add CellID or position of F1 here if needed by other functions
+    };
+
+    // Main Worley Noise function based on settings
+    // For NoiseTypeWorley_F2F1, this will calculate and return F2-F1.
+    // `perm_table` is used for hashing to generate feature point positions.
+    float worley_noise_3d(
+        float3 position,
+        constant BaseNoiseSettings &baseSettings,
+        constant WorleyNoiseSettings &worleySettings,
+        thread const int perm_table[512] // Initialized permutation table
+    );
+    
+    // Helper to calculate F1 and F2 distances (might be called by the main func)
+    WorleyDistances calculate_worley_distances_3d(
+        float3 position,
+        constant BaseNoiseSettings &baseSettings, // For frequency, offset
+        constant WorleyNoiseSettings &worleySettings, // For jitter, seedOffset
+        thread const int perm_table[512]
+    );
+
+
+} // namespace WorleyNoise3D
+
+#endif /* WorleyNoise3D_metalh */

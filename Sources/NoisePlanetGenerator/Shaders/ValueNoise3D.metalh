@@ -1,0 +1,19 @@
+#ifndef ValueNoise3D_metalh
+#define ValueNoise3D_metalh
+
+#include <metal_stdlib>
+#include "../../SharedTypes/include/NoisePlanetTypes.h" // For BaseNoiseSettings
+
+namespace ValueNoise3D {
+
+    // Value Noise 3D Declaration
+    // `perm_table` should be a 512-entry table, initialized by PermutationTable::initialize_perm_table
+   float value_noise_3d(
+    float3 position,
+    /*constant*/ BaseNoiseSettings /*&*/settings, // CHANGED
+    thread const int perm_table[512]
+);
+
+} // namespace ValueNoise3D
+
+#endif /* ValueNoise3D_metalh */

@@ -1,0 +1,38 @@
+#ifndef RidgedNoise3D_metalh
+#define RidgedNoise3D_metalh
+
+#include <metal_stdlib>
+#include "../../SharedTypes/include/NoisePlanetTypes.h" // For BaseNoiseSettings, FBMNoiseSettings, RidgedNoiseSettings
+
+namespace RidgedNoise3D {
+
+    // Ridged FBM based on Perlin
+    float ridged_fbm_perlin_3d(
+        float3 position,
+        constant BaseNoiseSettings &baseSettings,
+        constant FBMNoiseSettings &fbmSettings,
+        constant RidgedNoiseSettings &ridgedSettings,
+        thread const int perm_table[512]
+    );
+
+    // Ridged FBM based on Simplex
+    float ridged_fbm_simplex_3d(
+        float3 position,
+        constant BaseNoiseSettings &baseSettings,
+        constant FBMNoiseSettings &fbmSettings,
+        constant RidgedNoiseSettings &ridgedSettings,
+        thread const int perm_table[512]
+    );
+    
+    // Ridged FBM based on Value (less common for typical ridged look, but possible)
+    float ridged_fbm_value_3d(
+        float3 position,
+        constant BaseNoiseSettings &baseSettings,
+        constant FBMNoiseSettings &fbmSettings,
+        constant RidgedNoiseSettings &ridgedSettings,
+        thread const int perm_table[512]
+    );
+
+} // namespace RidgedNoise3D
+
+#endif /* RidgedNoise3D_metalh */
